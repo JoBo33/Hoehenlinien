@@ -97,15 +97,15 @@ V = (Grundfläche * (4 * Summe(h4) + 3 * Summe(h3) + 2 * Summe(h2) + Summe(h1)) 
 ###### Beispiel 
 ![Beispiel Raster](https://github.com/JoBo33/Hoehenlinien/blob/main/Example-Pictures/Example%20Grid.png "Beispiel Raster")
 
-Grundfläche = 1 * 1 = 1
-Summe(h4) = 6+6+6+6 = 24
-Summe(h3) = 0
-Summe(h2) = 5,5+5,5+5,5+5,5+5,5+5,5+5,5+5,5 = 8 * 5,5 = 42
-Summe(h1) = 5+5+5+5 = 20
-
-V = (1 * (4 * 24 + 2 * 42 + 20)) / 4
-V = 50
-
+Grundfläche = 1 * 1 = 1  
+Summe(h4) = 6+6+6+6 = 24  
+Summe(h3) = 0  
+Summe(h2) = 5,5+5,5+5,5+5,5+5,5+5,5+5,5+5,5 = 8 * 5,5 = 42  
+Summe(h1) = 5+5+5+5 = 20  
+  
+V = (1 * (4 * 24 + 2 * 42 + 20)) / 4  
+V = 50  
+  
 Somit besitzt der Hügel ein Volumen von 50 m³.
 
 
