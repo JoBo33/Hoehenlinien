@@ -4,11 +4,25 @@
 
 ## Datenstruktur
 
-Die Daten, die aus der Datei ausgelesen werden, können in einem dreidimensionalen Array gespeichert werden. Die der erste Eintrag ist die x-Koordinate. Der zweite Eintrag ist die y-Koordinate und der letzte Eintrag ist die jeweilige Höhe. Bildlich dargestellt entsteht dadurch ein Raster mit einer Höhenangabe an jeder Ecke.
+Die Daten, die aus der Datei ausgelesen werden, können in einem zweidimensionalen Array gespeichert werden. Die der erste Dimension sind die einzelnen Punkte. In der zweiten Dimension sind die Koordinaten und die Höhe der einzelnen Punkte gespeichert. Bildlich dargestellt entsteht dadurch ein Raster mit einer Höhenangabe an jeder Ecke.
+Ein Array könnte z. B. wie folgt aussehen:
+```ruby
+double[,] dataPoints =  new double[5, 3] { { 1, 1, 10 }, { 1, 2, 12.5 }, { 2, 1, 10 }, { 2, 2, 12.5 }, { 3, 2, 10 } };
+```
 
 ##### Beispiel Raster
 
 ![Beispiel Raster](https://github.com/JoBo33/Hoehenlinien/blob/main/Example-Pictures/Example%20Grid.png "Beispiel Raster")
+
+
+## Einlesen der Dateidaten
+Zuerst muss man die passende Bibliothek importieren 
+```ruby
+using System.IO;
+```
+Wenn dies erledigt ist, kann man mit einem "StreamReader" die Datei einlesen. Hierfür übergibt man bei der Instanziierung dem Konstruktor die Datei. Anschließend kann mit der Methode "ReadLine()" die Datei ausgelesen werden. Die Punkte sind folgenermaßen in die Datei eingetragen: 
+1.0,2.0,4,2;4.0,2.0,5.8;...
+Demnach muss mithilfe von Fallunterscheidungen geguckt werden, was die einzelnen Zahlen bedeuten und daher auch wo sie eingetragen werden müssen.
 
 
 ## Darstellung der Gui
