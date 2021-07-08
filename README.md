@@ -97,9 +97,13 @@ Wenn diese Methode mit der Funktion **f(x,y) = -((x-4)²+(y-4)²)+4** (siehe obe
 
 ![Beispiel ContourSeries](https://github.com/JoBo33/Hoehenlinien/blob/main/Example-Pictures/Example%20ContourSeries.png "Beispiel ContourSeries")
 
-## Problem beim obigen vorgehen
+#### Problem beim obigen vorgehen
 Wie erhält man die Funktion des Hügels, da lediglich das Raster gegeben ist?
 
+#### Lösungsansatz
+Da verschiedene Punkte mit ihren jeweiligen Höhen angegeben werden, kann man verschiedene Höhen festlegen (z. B. jeden Meter) und gucken welche Punkte knapp unterhalb und knapp oberhalb der jeweiligen Höhe liegen. Anhand von diesen Punkten kann man Punkte bestimmen dessen Höhe die gesuchte Höhe ist. Mithilfe von Splines kann man im Anschluss die gefundenen Punkte so verbinden, dass diese die Höhenlinien bilden.
+###### Beispiel 
+Zur Darstellung des oben genannten Ansatzes nehme ich das einfache Raster vom Beginn der Dokumentation. Gesucht sind Punkte mit der Höhe 5.8m 
 
 ## Volumen berechnen
 Für die Berechnung des Volumens wird die Massenberechnung mittels Höhenrost verwendet. Einfach erklärt berechnet man das Volumen indem man die Grundfläche von einem Rasterquadrat mit der durchschnittlichen Höhe der vier Ecken mulipliziert. Als Beispiel soll das Beispielraster vom Anfang genutzt werden. 
