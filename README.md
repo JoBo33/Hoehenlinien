@@ -4,11 +4,25 @@
 
 ## Datenstruktur
 
-Die Daten, die aus der Datei ausgelesen werden, können in einem dreidimensionalen Array gespeichert werden. Die der erste Eintrag ist die x-Koordinate. Der zweite Eintrag ist die y-Koordinate und der letzte Eintrag ist die jeweilige Höhe. Bildlich dargestellt entsteht dadurch ein Raster mit einer Höhenangabe an jeder Ecke.
+Die Daten, die aus der Datei ausgelesen werden, können in einem zweidimensionalen Array gespeichert werden. Die der erste Dimension sind die einzelnen Punkte. In der zweiten Dimension sind die Koordinaten und die Höhe der einzelnen Punkte gespeichert. Bildlich dargestellt entsteht dadurch ein Raster mit einer Höhenangabe an jeder Ecke.
+Ein Array könnte z. B. wie folgt aussehen:
+```ruby
+double[,] dataPoints =  new double[5, 3] { { 1, 1, 10 }, { 1, 2, 12.5 }, { 2, 1, 10 }, { 2, 2, 12.5 }, { 3, 2, 10 } };
+```
 
 ##### Beispiel Raster
 
 ![Beispiel Raster](https://github.com/JoBo33/Hoehenlinien/blob/main/Example-Pictures/Example%20Grid.png "Beispiel Raster")
+
+
+## Einlesen der Dateidaten
+Zuerst muss man die passende Bibliothek importieren 
+```ruby
+using System.IO;
+```
+Wenn dies erledigt ist, kann man mit einem "StreamReader" die Datei einlesen. Hierfür übergibt man bei der Instanziierung dem Konstruktor die Datei. Anschließend kann mit der Methode "ReadLine()" die Datei ausgelesen werden. Die Punkte sind folgenermaßen in die Datei eingetragen: 
+1.0,2.0,4,2;4.0,2.0,5.8;...
+Demnach muss mithilfe von Fallunterscheidungen geguckt werden, was die einzelnen Zahlen bedeuten und daher auch wo sie eingetragen werden müssen.
 
 
 ## Darstellung der Gui
@@ -83,9 +97,13 @@ Wenn diese Methode mit der Funktion **f(x,y) = -((x-4)²+(y-4)²)+4** (siehe obe
 
 ![Beispiel ContourSeries](https://github.com/JoBo33/Hoehenlinien/blob/main/Example-Pictures/Example%20ContourSeries.png "Beispiel ContourSeries")
 
-## Problem beim obigen vorgehen
+#### Problem beim obigen vorgehen
 Wie erhält man die Funktion des Hügels, da lediglich das Raster gegeben ist?
 
+#### Lösungsansatz
+Da verschiedene Punkte mit ihren jeweiligen Höhen angegeben werden, kann man verschiedene Höhen festlegen (z. B. jeden Meter) und gucken welche Punkte knapp unterhalb und knapp oberhalb der jeweiligen Höhe liegen. Anhand von diesen Punkten kann man Punkte bestimmen dessen Höhe die gesuchte Höhe ist. Mithilfe von Splines kann man im Anschluss die gefundenen Punkte so verbinden, dass diese die Höhenlinien bilden.
+###### Beispiel 
+Zur Darstellung des oben genannten Ansatzes nehme ich das einfache Raster vom Beginn der Dokumentation. Gesucht sind Punkte mit der Höhe 5.8m 
 
 ## Volumen berechnen
 Für die Berechnung des Volumens wird die Massenberechnung mittels Höhenrost verwendet. Einfach erklärt berechnet man das Volumen indem man die Grundfläche von einem Rasterquadrat mit der durchschnittlichen Höhe der vier Ecken mulipliziert. Als Beispiel soll das Beispielraster vom Anfang genutzt werden. 
