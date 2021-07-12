@@ -102,8 +102,28 @@ Wie erhält man die Funktion des Hügels, da lediglich das Raster gegeben ist?
 
 #### Lösungsansatz
 Da verschiedene Punkte mit ihren jeweiligen Höhen angegeben werden, kann man verschiedene Höhen festlegen (z. B. jeden Meter) und gucken welche Punkte knapp unterhalb und knapp oberhalb der jeweiligen Höhe liegen. Anhand von diesen Punkten kann man Punkte bestimmen dessen Höhe die gesuchte Höhe ist. Mithilfe von Splines kann man im Anschluss die gefundenen Punkte so verbinden, dass diese die Höhenlinien bilden.
+
 ###### Beispiel 
 Zur Darstellung des oben genannten Ansatzes nehme ich das einfache Raster vom Beginn der Dokumentation. Gesucht sind Punkte mit der Höhe 5.8m 
+Dem Raster kann man entnehmendas unter anderem zwischen folgenden Punkten die Höhenlinie verlaufen muss:
+
+1. Zwischen (1/3/5.5) und (2/3/6)
+2. Zwischen (3/4/5.5) und (3/3/6)
+3. Zwischen (3/2/6) und (4/2/5.5)
+4. Zwischen (2/1/5.5) und (2/2/6)
+
+Nun kann man jeweils zwischen den beiden gegebenen Punkte eine Grade erzeugen. Anschließend muss nur noch der Punkt (x/y/5,8) auf der Geraden gefunden werden.
+Beispielrechnung mit den ersten Punkten:
+![Beispiel Gerade](https://github.com/JoBo33/Hoehenlinien/blob/main/Example-Pictures/Example%20Line.png "Beispiel Gerade")
+Wann ist z = 5.8
+5.8 = 5.5 + s * 0.5
+0.6 = s
+\
+s in Gerade einsetzen
+![Beispiel Punkt](https://github.com/JoBo33/Hoehenlinien/blob/main/Example-Pictures/Example%20Point.png "Erhalte Punkt durch einsetzen")
+Somit wurde der erste Punkt (1.6/3/5.8) gefunden der auf der Höhenlinie 5.8 liegt.
+
+Dies muss nun noch für mindestens 3 weitere Punkte durchgeführt werden. Anschließend kann man mithilfe von Catmull-Rom-Splines die Höhenlinien bestimmen. Die Splines funktionieren indem man zwischen 2 Punkten ein eine Linie schafft, die abhängig von einer Gewichtung zwischen den beiden Punkten und den beiden nächsten Punkten ist. Dadurch werden die Höhenlinien allein unter der Bedingung der Punkte, die auf dieser Höhe liegen, bestimmt.
 
 ## Volumen berechnen
 Für die Berechnung des Volumens wird die Massenberechnung mittels Höhenrost verwendet. Einfach erklärt berechnet man das Volumen indem man die Grundfläche von einem Rasterquadrat mit der durchschnittlichen Höhe der vier Ecken mulipliziert. Als Beispiel soll das Beispielraster vom Anfang genutzt werden. 
