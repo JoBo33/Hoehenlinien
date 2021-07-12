@@ -123,6 +123,7 @@ s in Gerade einsetzen
 ![Beispiel Punkt](https://github.com/JoBo33/Hoehenlinien/blob/main/Example-Pictures/Example%20Point.png "Erhalte Punkt durch einsetzen")
 Somit wurde der erste Punkt (1.6/3/5.8) gefunden der auf der Höhenlinie 5.8 liegt.
 
+Dies muss nun noch für mindestens 3 weitere Punkte durchgeführt werden. Anschließend kann man mithilfe von Catmull-Rom-Splines die Höhenlinien bestimmen. Die Splines funktionieren indem man zwischen 2 Punkten ein eine Linie schafft, die abhängig von einer Gewichtung zwischen den beiden Punkten und den beiden nächsten Punkten ist. Dadurch werden die Höhenlinien allein unter der Bedingung der Punkte, die auf dieser Höhe liegen, bestimmt.
 
 ## Volumen berechnen
 Für die Berechnung des Volumens wird die Massenberechnung mittels Höhenrost verwendet. Einfach erklärt berechnet man das Volumen indem man die Grundfläche von einem Rasterquadrat mit der durchschnittlichen Höhe der vier Ecken mulipliziert. Als Beispiel soll das Beispielraster vom Anfang genutzt werden. 
