@@ -165,6 +165,8 @@ V = 51
 
 Somit besitzt der Hügel ein Volumen von 50 m³, unter der Bedingung, dass der Hügel bis auf Höhe des Meeresspiegels abgetragen werden soll.
 
+### Struktogramm zur Volumenberechnung
 
+![Struktogramm Volumen](https://github.com/JoBo33/Hoehenlinien/blob/main/Example-Pictures/Struktogramm%20Calculate_Volume.png "Struktogramm Volumenberechnung")
 
 
