@@ -99,8 +99,9 @@ Wenn diese Methode mit der Funktion **f(x,y) = -((x-4)²+(y-4)²)+4** (siehe obe
 
 #### Problem beim obigen vorgehen
 Wie erhält man die Funktion des Hügels, da lediglich das Raster gegeben ist?
+Die oben genannte Methode die Höhenlinien darstellen zu können wurde verworfen, da ein Hügel nicht immer als Funktion darstellbar ist. Aus diesem Grund wird im Folgenden ein neuer Ansatz aufgeführt. 
 
-#### Lösungsansatz
+#### Neuer Lösungsansatz zur Darstellung von Höhenlinien
 Da verschiedene Punkte mit ihren jeweiligen Höhen angegeben werden, kann man verschiedene Höhen festlegen (z. B. jeden Meter) und gucken welche Punkte knapp unterhalb und knapp oberhalb der jeweiligen Höhe liegen. Anhand von diesen Punkten kann man Punkte bestimmen dessen Höhe die gesuchte Höhe ist. Mithilfe von Splines kann man im Anschluss die gefundenen Punkte so verbinden, dass diese die Höhenlinien bilden.
 
 ###### Beispiel 
@@ -131,6 +132,8 @@ Da das Raster aus mehreren Quadraten besteht, kann man die durchschnittliche Hö
 Somit ergibt sich folgende Formel:
 
 V = (Grundfläche * (4 * Summe(h4) + 3 * Summe(h3) + 2 * Summe(h2) + Summe(h1)) / 4
+Alternativ: Summe der einzelnen Rasterquadrate
+V = Summe(Vr), wobei Vr = Volumen Rasterquadrat = (a²*(h1+h2+h3+h4))/4
 
 ###### Beispiel 
 ![Beispiel Raster](https://github.com/JoBo33/Hoehenlinien/blob/main/Example-Pictures/Example%20Grid.png "Beispiel Raster")
@@ -138,18 +141,29 @@ V = (Grundfläche * (4 * Summe(h4) + 3 * Summe(h3) + 2 * Summe(h2) + Summe(h1)) 
 Grundfläche = 1 * 1 = 1  
 Summe(h4) = 6+6+6+6 = 24  
 Summe(h3) = 0  
-Summe(h2) = 5,5+5,5+5,5+5,5+5,5+5,5+5,5+5,5 = 8 * 5,5 = 42  
+Summe(h2) = 5,5+5,5+5,5+5,5+5,5+5,5+5,5+5,5 = 8 * 5,5 = 44  
 Summe(h1) = 5+5+5+5 = 20  
   
-V = (1 * (4 * 24 + 2 * 42 + 20)) / 4  
-V = 50  
-  
-Somit besitzt der Hügel ein Volumen von 50 m³.
+V = (1 * (4 * 24 + 2 * 44 + 20)) / 4  
+V = 51    
 
+Somit besitzt der Hügel ein Volumen von 50 m³, unter der Bedingung, dass der Hügel bis auf Höhe des Meeresspiegels abgetragen werden soll. 
 
+Alternativ:
 
+V1 = 5.5  
+V2 = 5.75  
+V3 = 5.5  
+V4 = 5.75  
+V5 = 6  
+V6 = 5.75  
+V7 = 5.5  
+V8 = 5.75  
+V9 = 5.5  
 
+V = 51  
 
+Somit besitzt der Hügel ein Volumen von 50 m³, unter der Bedingung, dass der Hügel bis auf Höhe des Meeresspiegels abgetragen werden soll.
 
 
 
