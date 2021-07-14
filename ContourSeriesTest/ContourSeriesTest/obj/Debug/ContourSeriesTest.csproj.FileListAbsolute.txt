@@ -9,3 +9,14 @@ C:\Users\jb83292\source\repos\ContourSeriesTest\ContourSeriesTest\obj\Debug\Cont
 C:\Users\jb83292\source\repos\ContourSeriesTest\ContourSeriesTest\obj\Debug\ContourSeriesTest.csproj.CopyComplete
 C:\Users\jb83292\source\repos\ContourSeriesTest\ContourSeriesTest\obj\Debug\ContourSeriesTest.exe
 C:\Users\jb83292\source\repos\ContourSeriesTest\ContourSeriesTest\obj\Debug\ContourSeriesTest.pdb
+C:\Users\jb83292\source\repos\Hoehenlinien\ContourSeriesTest\ContourSeriesTest\bin\Debug\ContourSeriesTest.exe.config
+C:\Users\jb83292\source\repos\Hoehenlinien\ContourSeriesTest\ContourSeriesTest\bin\Debug\ContourSeriesTest.exe
+C:\Users\jb83292\source\repos\Hoehenlinien\ContourSeriesTest\ContourSeriesTest\bin\Debug\ContourSeriesTest.pdb
+C:\Users\jb83292\source\repos\Hoehenlinien\ContourSeriesTest\ContourSeriesTest\obj\Debug\ContourSeriesTest.csprojAssemblyReference.cache
+C:\Users\jb83292\source\repos\Hoehenlinien\ContourSeriesTest\ContourSeriesTest\obj\Debug\ContourSeriesTest.Form1.resources
+C:\Users\jb83292\source\repos\Hoehenlinien\ContourSeriesTest\ContourSeriesTest\obj\Debug\ContourSeriesTest.Properties.Resources.resources
+C:\Users\jb83292\source\repos\Hoehenlinien\ContourSeriesTest\ContourSeriesTest\obj\Debug\ContourSeriesTest.csproj.GenerateResource.cache
+C:\Users\jb83292\source\repos\Hoehenlinien\ContourSeriesTest\ContourSeriesTest\obj\Debug\ContourSeriesTest.csproj.CoreCompileInputs.cache
+C:\Users\jb83292\source\repos\Hoehenlinien\ContourSeriesTest\ContourSeriesTest\obj\Debug\ContourSeriesTest.csproj.CopyComplete
+C:\Users\jb83292\source\repos\Hoehenlinien\ContourSeriesTest\ContourSeriesTest\obj\Debug\ContourSeriesTest.exe
+C:\Users\jb83292\source\repos\Hoehenlinien\ContourSeriesTest\ContourSeriesTest\obj\Debug\ContourSeriesTest.pdb

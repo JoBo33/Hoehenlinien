@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+
 namespace ContourSeriesTest
 {
     public partial class Form1 : Form
@@ -18,9 +19,8 @@ namespace ContourSeriesTest
         {
             InitializeComponent();
         }
-
-        PlotModel model = new PlotModel { Title = "ContourSeries" };
         
+        PlotModel model = new PlotModel { Title = "ContourSeries" };
         public void DrawContours()
         {
 
