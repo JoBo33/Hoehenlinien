@@ -15,349 +15,253 @@ using System.Windows.Forms;
 
 namespace ContourMap
 {
-    public partial class Form1 : Form
+    public partial class Hillproject : Form
     {
-        public Form1()
+        public Hillproject()
         {
             InitializeComponent();
         }
 
-        
-        public void FillData(string line, List<double[]> data)
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string point = "";
-            string number = "";
-            for (int i = 0; i < line.Length; i++)
-            {
-                double tmp;
-                if(double.TryParse(line[i].ToString(), out tmp) || line[i].ToString() == "." || line[i].ToString() == ",")
-                {
-                    point += line[i];
-                }
-                if(line[i].ToString() == ";")
-                {
-                    double[] coordinate = new double[3];
-                    int count = 0;
-                    for (int j = 0; j <= point.Length; j++)
-                    {
-                        if (j == point.Length)
-                        {
-                            coordinate[count] = Convert.ToDouble(number);
-                            count++;
-                            number = "";
-                        }
-                        else
-                        {
-                            if (double.TryParse(point[j].ToString(), out tmp) || point[j].ToString() == ".")
-                            {
-                                number += point[j];
-                            }
-
-                            if (point[j].ToString() == ",")
-                            {
-                                coordinate[count] = Convert.ToDouble(number);
-                                count++;
-                                number = "";
-                            }
-                        }
-                    }
-                    point = "";
-                    data.Add(coordinate);
-                }
-
-            }
+            ExecuteTask(-1);
         }
 
-        public void adjustHeight(List<double[]> data)
+        private void volumeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            double smallestHeight = double.MaxValue;
-            for (int i = 0; i < data.Count; i++)
-            {
-                if (data[i][2] < smallestHeight)
-                {
-                    smallestHeight = data[i][2];
-                }
-            }
-            for (int i = 0; i < data.Count; i++)
-            {
-                data[i][2] -= smallestHeight;
-            }
+            ExecuteTask(0);
+        }
+
+        private void optimalNumberOfTrucksToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ExecuteTask(1);
+        }
+
+        private void hillProfilesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ExecuteTask(2);
+        }
+
+        private void contourMapToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ExecuteTask(3);
         }
 
 
-        public void DeterminePointsInOneRow(List<double[]> data, ref int pointsInOneRow)
+        private void ExecuteTask(int pressedMenu)
         {
-            for (int i = 0; i < data.Count; i += (1))
-            {
-                pointsInOneRow = pointsInOneRow + 1;
-                if (data[i][1] != data[i + 1][1])
-                {
-                    break;
-                }
-            }
-        }
-
-        public double CalculateVolume(List<double[]> data, int pointsInOneRow)
-        {
-            double volume = 0;
-            double ground = Math.Pow((data[1][0] - data[0][0]),2);
-            for (int i = 0; i < data.Count - pointsInOneRow-1; i += (1))
-		    {
-                if((i % pointsInOneRow)-(pointsInOneRow-1) == 0 && i != 0)
-                {
-                    continue;
-                }
-                double height = (data[i][2] + data[i + 1][2] + data[i + pointsInOneRow][2] + data[i + pointsInOneRow + 1][2]) / 4;
-                volume = volume + ground * height;
-            }
-            return volume;
-        }
-
-        public void DetermineContourLines(List<double[]> data, PlotModel model, int pointsInOneRow)
-        {
-            for (int i = 0; i <= data[2].Max(); i += (1)) // funktion für max hoehe implementieren!!
-            {
-                List<double[]> contourLine = new List<double[]> { };
-                for (int j = 0; j < data.Count-1; j += (1))
-                {
-                    if (j < data.Count - pointsInOneRow)
-                    {
-                        if (data[j][2] < i && data[j + pointsInOneRow][2] > i || data[j][2] > i && data[j + pointsInOneRow][2] < i)
-                        {
-                            double tmp = (i - data[j][2]) / (data[j + pointsInOneRow][2] - data[j][2]);
-                            double[] pointOnHeight = { data[j][0] + tmp * (data[j + pointsInOneRow][0] - data[j][0]), data[j][1] + tmp * (data[j + pointsInOneRow][1] - data[j][1]), i };
-                            contourLine.Add(pointOnHeight); //add pointOnHeight to contourLine
-                        }
-                    }
-                    if ((j % pointsInOneRow) - (pointsInOneRow - 1) == 0 && j != 0) //(j % pointsInOneRow == 0)
-                    {
-                        continue;
-                    }
-                    if (data[j][2] < i && data[j + 1][2] > i || data[j][2] > i && data[j + 1][2] < i)
-                    {
-                        double tmp = (i - data[j][2]) / (data[j + 1][2] - data[j][2]);
-                        double[] pointOnHeight = { data[j][0] + tmp * (data[j + 1][0] - data[j][0]), data[j][1] + tmp * (data[j + 1][1] - data[j][1]), i };
-                        contourLine.Add(pointOnHeight);
-                    }
-                }
-                if (contourLine.Count != 0)
-                {
-                    sortContourPoints(ref contourLine);
-                    CatmullRomSplines(contourLine, model);
-
-                }
-                //draw contourLine;
-            }
-        }
-
-        private void CatmullRomSplines(List<double[]> contourLine, PlotModel model)
-        {
-            LineSeries line = new LineSeries();
-            for (float t = 0; t < contourLine.Count - 1; t += 0.01f)
-            {
-                int p1 = (int)t;
-                int p2 = (p1 + 1) % (contourLine.Count - 1);
-                int p3 = (p2 + 1) % (contourLine.Count - 1);
-                int p0 = p1 >= 1 ? p1 - 1 : contourLine.Count - 1;
-
-                float tmp = t - (int)t;
-                float tt = tmp * tmp;
-                float ttt = tmp * tmp * tmp;
-
-                float q1 = -ttt + 2.0f * tt - tmp;
-                float q2 = 3.0f * ttt - 5.0f * tt + 2;
-                float q3 = -3.0f * ttt + 4.0f * tt + tmp;
-                float q4 = ttt - tt;
-
-                double x = 0.5 * (contourLine[p0][0] * q1 + contourLine[p1][0] * q2 + contourLine[p2][0] * q3 + contourLine[p3][0] * q4);
-                double y = 0.5 * (contourLine[p0][1] * q1 + contourLine[p1][1] * q2 + contourLine[p2][1] * q3 + contourLine[p3][1] * q4);
-
-                line.Points.Add(new DataPoint(x, y));
-            }
-            model.Series.Add(line);
-            model.InvalidatePlot(true);
-        }
-
-        public void sortContourPoints(ref List<double[]> contourLine)
-        {
-            List<double[]> sortedContourLine = new List<double[]> { };
-            for (int i = 0; i < contourLine.Count; i++)
-            {
-                for (int j = 0; j < contourLine.Count-1; j++)
-                {
-                    if(contourLine[j][0] > contourLine[j+1][0])
-                    {
-                       Swap(ref contourLine, j, j + 1);
-                    }
-                }
-            }
-            for (int i = 0; i < contourLine.Count-1; i++)
-            {
-                if (contourLine[i][0] == contourLine[i + 1][0] && contourLine[i][1] > contourLine[i + 1][1])
-                {
-                    Swap(ref contourLine, i, i + 1);
-                }
-            }
-            for (int i = 0; i < contourLine.Count; i+=2)
-            {
-                sortedContourLine.Add(contourLine[i]);
-            }
-            for (int i = contourLine.Count-1; i >= 0; i -= 2)
-            {
-                sortedContourLine.Add(contourLine[i]);
-            }
-            contourLine = sortedContourLine;
-        }
-        public static void Swap(ref List<double[]> sortingList, int indexA, int indexB)
-        {
-            double[] temp = sortingList[indexA];
-            sortingList[indexA] = sortingList[indexB];
-            sortingList[indexB] = temp;
-        }
-            private void buttonVolume_Click(object sender, EventArgs e)
-        {
-            PrepareVariables(1);
-        }
-
-        private void buttonTrucks_Click(object sender, EventArgs e)
-        {
-            PrepareVariables(2);
-        }
-
-        private void buttonDiagram_Click(object sender, EventArgs e)
-        {
-            PrepareVariables(0);
-        }
-
-
-        private void PrepareVariables(int pressedButton)
-        {
-
             List<double[]> data = new List<double[]> { };
+            
+            if (pressedMenu == -1)
+            {
+                ExecuteFileTask(data);
+
+                AddControlsForFileTask(data);               
+            }
+
+            int pointsInOneRow = 0;
+            if(!PrepareVariables(data, ref pointsInOneRow))
+            {
+                return;
+            }
+            
+            if (pressedMenu == 0) // calc volume
+            {
+                TextBox textBoxVolume = AddControlsForVolume();
+
+                double volume = Calculation.CalculateVolume(data, pointsInOneRow);
+                textBoxVolume.Text = volume.ToString();
+            }
+
+            else if (pressedMenu == 1) // calc trucks
+            {
+                DataGridView dataGridViewTrucks = AddDataGridForTrucks();
+                double volume = Calculation.CalculateVolume(data, pointsInOneRow);
+                FillDataGridViewTrucks(dataGridViewTrucks, volume);
+            }
+
+            else if (pressedMenu == 2) // draw profiles
+            {
+                TabControl tabControlHillProfiles = new TabControl()
+                {
+                    Location = new Point(550, 30),
+                    Width = 430,
+                    Height = 329
+                };
+                this.Controls.Add(tabControlHillProfiles);
+
+                for (int i = 0; i < pointsInOneRow; i++)
+                {
+                    AddAndFillTabPagesForProfiles(tabControlHillProfiles, data, pointsInOneRow, i);
+
+                }
+            }
+
+            else if (pressedMenu == 3) // draw contour map
+            {
+                PlotModel model = AddPlotViewModelForContourMap();
+
+                Drawing.DetermineContourLines(data, model, pointsInOneRow);               
+            }
+        }
+
+        private void AddControlsForFileTask(List<double[]> data)
+        {
+            DataGridView dataGridViewFileContent = new DataGridView()
+            {
+                ColumnCount = 4,
+                RowCount = data.Count,
+                Location = new Point(20, 30),
+                RowHeadersVisible = false,
+                Width = 430,
+                Height = 329
+
+            };
+
+            dataGridViewFileContent.Columns[0].HeaderText = "Point";
+            dataGridViewFileContent.Columns[1].HeaderText = "x";
+            dataGridViewFileContent.Columns[2].HeaderText = "y";
+            dataGridViewFileContent.Columns[3].HeaderText = "z";
+
+            this.Controls.Add(dataGridViewFileContent);
+
+            for (int i = 0; i < data.Count; i++)
+            {
+                dataGridViewFileContent.Rows[i].Cells[0].Value = i;
+                dataGridViewFileContent.Rows[i].Cells[1].Value = data[i][0];
+                dataGridViewFileContent.Rows[i].Cells[2].Value = data[i][1];
+                dataGridViewFileContent.Rows[i].Cells[3].Value = data[i][2];
+            }
+            label3.Visible = true;
+            textBoxFilePath.Visible = true;
+        }
+
+        private void ExecuteFileTask(List<double[]> data)
+        {
+            OpenFileDialog openDlg = new OpenFileDialog();
+            openDlg.ShowDialog();
+            string path = openDlg.FileName;
+            textBoxFilePath.Text = path;
+            try
+            {
+                StreamReader str = new StreamReader(textBoxFilePath.Text);
+                string line = str.ReadLine();
+                EditingData.FillData(line, data);
+            }
+            catch (FileNotFoundException ex)
+            {
+                MessageBox.Show("The file " + ex.FileName + " could not be found, please check the file path.");
+                return;
+            }
+        }
+
+        private bool PrepareVariables(List<double[]> data, ref int pointsInOneRow)
+        {
             if (textBoxFilePath.Text == string.Empty)
             {
                 MessageBox.Show("Pls enter a file path.");
-                return;
+                return false;
             }
 
-            StreamReader str;
             try
             {
-                str = new StreamReader(textBoxFilePath.Text);
+                StreamReader str = new StreamReader(textBoxFilePath.Text);
                 string line = str.ReadLine();
-                FillData(line, data);
+                EditingData.FillData(line, data);
             }
-            catch(FileNotFoundException e)
+            catch (FileNotFoundException e)
             {
-                MessageBox.Show("The file " + e.FileName+ " could not be found, please check the file path.");
-                return;
+                MessageBox.Show("The file " + e.FileName + " could not be found, please check the file path.");
+                return false;
             }
-            int pointsInOneRow = 0;
-            SortData(data);
-            adjustHeight(data);
-            DeterminePointsInOneRow(data, ref pointsInOneRow);
+            EditingData.SortData(data);
+            EditingData.adjustHeight(data);
+            Calculation.DeterminePointsInOneRow(data, ref pointsInOneRow);
+            return true;
+        }
 
-
-            if (pressedButton == 0)
+        private TextBox AddControlsForVolume()
+        {
+            Label labelVol = new Label()
             {
-                PlotModel model = new PlotModel();
-                plotViewContours.Model = model;
-                DetermineContourLines(data, model, pointsInOneRow);
+                Location = new Point(500, 205),
+                Text = "V:",
+                Width = 20
 
-                PlotModel firstTabModel = new PlotModel();
-                plotViewColumnSeries1.Model = firstTabModel;
-                DrawColumnSeries(ref firstTabModel, data, pointsInOneRow);
-
-                for (int i = 1; i < pointsInOneRow; i++)
-                {
-                    string title = "Profile " + (tabControlHillProfiles.TabCount + 1).ToString();
-                    TabPage tabPageP2 = new TabPage(title);
-                    tabControlHillProfiles.TabPages.Add(tabPageP2);
-
-                    PlotModel plot = new PlotModel();
-                    PlotView plotView2 = new PlotView() { BackColor = Color.White, Dock = DockStyle.Fill};
-                    plotView2.Model = plot;
-                    DrawColumnSeries(ref plot, data, pointsInOneRow, i);
-
-                    tabPageP2.Controls.Add(plotView2);
-                }
-            }
-            else if(pressedButton == 1)
+            };
+            Label labelMeter = new Label()
             {
-                double volume = CalculateVolume(data, pointsInOneRow);
-                textBoxVolume.Text = volume.ToString();
-            }
-            else if(pressedButton == 2)
+                Location = new Point(620, 205),
+                Text = "m"
+            };
+            TextBox textBoxVolume = new TextBox()
             {
-                double volume = CalculateVolume(data, pointsInOneRow);
-                int numberOfTrucks = 100;
-                dataGridView1.RowCount = numberOfTrucks;
-                for (int i = 1; i <= numberOfTrucks; i++)
-                {
-                    dataGridView1.Rows[i - 1].Cells[0].Value = i;
-                    dataGridView1.Rows[i - 1].Cells[1].Value = Math.Ceiling((volume / 7) / i) * 30;
-                }
-            }
-            else
+                ReadOnly = true,
+                Location = new Point(520, 200),
+                Width = 100
+            };
+
+            this.Controls.Add(labelVol);
+            this.Controls.Add(labelMeter);
+            this.Controls.Add(textBoxVolume);
+            return textBoxVolume;
+        }
+
+        private DataGridView AddDataGridForTrucks()
+        {
+            DataGridView dataGridViewTrucks = new DataGridView()
             {
-                MessageBox.Show("Sth. goes wrong.");
+                Location = new Point(550, 30),
+                Width = 200,
+                Height = 329,
+                RowHeadersVisible = false,
+                ColumnCount = 2
+            };
+            dataGridViewTrucks.Columns[0].HeaderText = "Number of trucks";
+            dataGridViewTrucks.Columns[1].HeaderText = "Time";
+            this.Controls.Add(dataGridViewTrucks);
+            return dataGridViewTrucks;
+        }
+
+        private void FillDataGridViewTrucks(DataGridView dataGridViewTrucks, double volume)
+        {
+            int numberOfTrucks = 100;
+            dataGridViewTrucks.RowCount = numberOfTrucks;
+            for (int i = 1; i <= numberOfTrucks; i++)
+            {
+                dataGridViewTrucks.Rows[i - 1].Cells[0].Value = i;
+                dataGridViewTrucks.Rows[i - 1].Cells[1].Value = Math.Ceiling((volume / 7) / i) * 30;
             }
         }
 
-        private void SortData(List<double[]> data)
+        private void AddAndFillTabPagesForProfiles(TabControl tabControlHillProfiles, List<double[]> data, int pointsInOneRow, int i)
         {
-            for (int i = 0; i < data.Count; i++)
-            {
-                for (int j = 0; j < data.Count - 1; j++)
-                {
-                    if (data[j][1] > data[j + 1][1])
-                    {
-                        Swap(ref data, j, j + 1);
-                    }
-                }
-            }
-            for (int i = 0; i < data.Count - 1; i++)
-            {
-                if (data[i][1] == data[i + 1][1] && data[i][0] > data[i + 1][0])
-                {
-                    Swap(ref data, i, i + 1);
-                }
-            }
+            string title = "Profile " + (tabControlHillProfiles.TabCount + 1).ToString();
+            TabPage tabPage = new TabPage(title);
+            tabControlHillProfiles.TabPages.Add(tabPage);
+
+            PlotModel plot = new PlotModel();
+            PlotView plotView2 = new PlotView() { BackColor = Color.White, Dock = DockStyle.Fill };
+            plotView2.Model = plot;
+            tabPage.Controls.Add(plotView2);
+            Drawing.DrawColumnSeries(ref plot, data, pointsInOneRow, i);
         }
 
-        private void DrawColumnSeries(ref PlotModel plot, List<double[]> data, int pointsInOneRow, int rowNumber = 0)
+        private PlotModel AddPlotViewModelForContourMap()
         {
-            double maxHeight = FindMaxHeight(data);
-            ColumnSeries columnSeries = new ColumnSeries();
-            LinearAxis height = new LinearAxis { Minimum = 0, Maximum = maxHeight };
-            height.IsZoomEnabled = false;
-            plot.Axes.Add(height);
-
-            CategoryAxis xAxis = new CategoryAxis { };
-            xAxis.IsZoomEnabled = false;
-            plot.Axes.Add(xAxis);
-
-            for (int i = 0; i < pointsInOneRow; i++)
+            PlotView plotContour = new PlotView()
             {
-                columnSeries.Items.Add(new ColumnItem(data[i + pointsInOneRow * rowNumber][2]));
-            }
-            plot.Series.Add(columnSeries);
-            plot.InvalidatePlot(true);
-
-        }
-
-        private double FindMaxHeight(List<double[]> data)
-        {
-            double max = 0;
-            for (int i = 0; i < data.Count; i++)
-            {
-                if (max < data[i][2])
-                {
-                    max = data[i][2];
-                }
-            }
-            return max;
+                BackColor = Color.White,
+                Location = new Point(550, 30),
+                Width = 430,
+                Height = 329
+            };
+            PlotModel model = new PlotModel();
+            plotContour.Model = model;
+            this.Controls.Add(plotContour);
+            return model;
         }
 
     }
+    
 }
