@@ -126,8 +126,10 @@ Somit wurde der erste Punkt (1.6/3/5.8) gefunden der auf der Höhenlinie 5.8 lie
 
 Dies muss nun noch für mindestens 3 weitere Punkte durchgeführt werden. Anschließend kann man mithilfe von Catmull-Rom-Splines die Höhenlinien bestimmen. Die Splines funktionieren indem man zwischen 2 Punkten ein eine Linie schafft, die abhängig von einer Gewichtung zwischen den beiden Punkten und den beiden nächsten Punkten ist. Dadurch werden die Höhenlinien allein unter der Bedingung der Punkte, die auf dieser Höhe liegen, bestimmt.
 
+### Struktogramm Höhenlinien
 ![Beispiel Höhenlinien](https://github.com/JoBo33/Hoehenlinien/blob/main/Example-Pictures/Struktogramm%20Determine%20contour%20lines.png "Struktogramm Höhenlinien")
 
+Erst werden die Variablen vorbereitet. Die äußere For-Schleife beduetet das für jede Iteration eine Höhenlinie auf der Höhe i gesucht wird. Die innere Schleife ist für das Bestimmen von Punkten auf der Höhe i. Hierfür werden zuerst die Höhen aller senkrechten Nachbarpunkten verglichen und wenn möglich den Punkt zwischen diesen bestimmt, der auf Höhe i liegt. Anschlißend wird dasselbe zwischen horizontalen Nachbarknoten vollzogen wobei immer der Knoten j mit dem rechten Nachbarn verglichen wird, sodass der letzte Punkt einer Reihe übersprungen wird, da dieser keinen rechten Nachbarn besitzt. Zum Schluss, wenn alle Punkte einer Höhe gefunden wurden, kann die Höhenlinie mithilfe von Catmull-Rom-Splines gezeichnet werden. 
 
 ## Volumen berechnen
 Für die Berechnung des Volumens wird die Massenberechnung mittels Höhenrost verwendet. Einfach erklärt berechnet man das Volumen indem man die Grundfläche von einem Rasterquadrat mit der durchschnittlichen Höhe der vier Ecken mulipliziert. Als Beispiel soll das Beispielraster vom Anfang genutzt werden. 
@@ -171,6 +173,8 @@ Somit besitzt der Hügel ein Volumen von 50 m³, unter der Bedingung, dass der H
 ### Struktogramm zur Volumenberechnung
 
 ![Struktogramm Volumen](https://github.com/JoBo33/Hoehenlinien/blob/main/Example-Pictures/Struktogramm%20Calculate_Volume.png "Struktogramm Volumenberechnung")
+
+Zu Beginn wird die Datei ausgelesen und die Variablen für die Berechnung vorbereitet. Mithilfe der ersten For-Schleife wird die Anzahl der Punkte bestimmt, die in einer Zeile des Rasters liegen. Anschlißend wird die Grundläche bestimmt und in der nächsten For-Schleife werden die Volumen von den einzelnen Rasterquadrate bestimmt. Hierbei werden die letzten Punkte einer Zeile übersprungen, da immer das Quadrat von i zu i+1 berechnet wird und im Falle von i = letzter Punkt einer Zeile wäre i+1 nicht Teil der Zeile und somit sind i und i+1 in diesem Fall nicht Teil eines Quadrates. Zuletzt werden die einzelnen Volumen auf das Gesamtvolumen addiert.
 
 ## UML-Klassendiagramm
 ![Klassendiagramm](https://github.com/JoBo33/Hoehenlinien/blob/main/Example-Pictures/UML-Classdiagram%20Hillproject.png "Beispiel Klassendiagramm")
