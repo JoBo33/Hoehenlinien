@@ -4,10 +4,10 @@
 
 ## Datenstruktur
 
-Die Daten, die aus der Datei ausgelesen werden, können in einem zweidimensionalen Array gespeichert werden. Die der erste Dimension sind die einzelnen Punkte. In der zweiten Dimension sind die Koordinaten und die Höhe der einzelnen Punkte gespeichert. Bildlich dargestellt entsteht dadurch ein Raster mit einer Höhenangabe an jeder Ecke.
-Ein Array könnte z. B. wie folgt aussehen:
+Die Daten, die aus der Datei ausgelesen werden, können in einer Liste bestehend aus Arrays gespeichert werden. Die einzelnen Elemente der Liste sind die Messpunkte. Der erste Wert eines  Arrays ist die x-Koordinate, der zweite Wert ist die y-Koordinate und der dritte Wert stellt die Höhe dar. 
+Die Liste könnte z. B. wie folgt aussehen:
 ```ruby
-double[,] dataPoints =  new double[5, 3] { { 1, 1, 10 }, { 1, 2, 12.5 }, { 2, 1, 10 }, { 2, 2, 12.5 }, { 3, 2, 10 } };
+List<double[]> dataPoints =  new List<double[]>{ { 1, 1, 10 }, { 1, 2, 12.5 }, { 2, 1, 10 }, { 2, 2, 12.5 }, { 3, 2, 10 } };
 ```
 
 ##### Beispiel Raster
