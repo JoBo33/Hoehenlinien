@@ -172,4 +172,41 @@ Somit besitzt der Hügel ein Volumen von 50 m³, unter der Bedingung, dass der H
 
 ![Struktogramm Volumen](https://github.com/JoBo33/Hoehenlinien/blob/main/Example-Pictures/Struktogramm%20Calculate_Volume.png "Struktogramm Volumenberechnung")
 
+## UML-Klassendiagramm
+![Klassendiagramm](https://github.com/JoBo33/Hoehenlinien/blob/main/Example-Pictures/UML-Classdiagram%20Hillproject.png "Beispiel Klassendiagramm")
+
+Das Projekt besteht aus vier Klassen. Die Hauptklasse ist "Form1(Hillproject)". Die weiteren Klassen dienen der Unterstützung. In der Klasse "Calculation" weerden die Berechnungen durchgeführt, in der Klasse "Drawing" werden die Profile und Höhenlinien gezeichnet und die Klasse "EditingData" ist zum Bearbeiten der Messdaten. Die Hauptklasse ruft Methoden der anderen drei Klassen auf, daher ist die Beziehung zwischen den Klassen eine gerichtete Assoziation. Dasselbe gilt für die Beziehung zwischen "Drawing" und "EditingData".
+
+## UML-Sequenzdiagramme 
+##### Dateiauslesen
+![Sequenzdiagramm Datei](https://github.com/JoBo33/Hoehenlinien/blob/main/Example-Pictures/UML-Sequency%20diagramm%20Read%20files.png "Sequenzdiagramm Dateiauslesen")
+
+Die Klasse "Hillproject" erstellt ein Objekt der Klasse "OpenFileDialog" und ruft mit diesem die Methode "ShowDialog" auf. Anschließend wird der Name der ausgewählten Datei gespeichert. Daraufhin wird mit mithilfe eines "StreamReader" Objektes die ausgewählte Datei ausgelesen. Zuletzt wird die Liste durch die Methode "FillData" aus der Klasse "EditingData" befüllt und als Tabelle ausgegeben.
+
+##### Volumenberechnung
+![Sequenzdiagramm Volumen](https://github.com/JoBo33/Hoehenlinien/blob/main/Example-Pictures/UML-Sequnecy%20diagram%20volumecalculation.png "Sequenzdiagramm Volumenberechnung")
+
+Nachdem die Datei erfolgreich ausgelesen wurde kann das Volumen des Hügels bestimmt werden. Zur Bestimmung des Volumens müssen die Messdaten zuerst in die Rastermusterreihenfolge gebracht werden. Anschließend werden die Höhen angepasst, da der Hügel sonst immer auf die Höhe des Meeresspiegels reduziert werden würde, was teilweise ein Loch im Boden hinterlassen kann. Bevor das Volumen entgülitg berechnet werden kann muss herausgefunden werden, wie viele Punkte in einer Zeile des Rasters sind. Anschließend wird das Volumen wie oben beschrieben berechnet und schlussendlich ausgegeben.
+
+##### Anzahl LKW
+![Sequenzdiagramm LKW](https://github.com/JoBo33/Hoehenlinien/blob/main/Example-Pictures/UML-Sequnecy%20diagram%20number%20of%20trucks.png "Sequenzdiagramm Anzahl LKW")
+
+Was einem auf dem ersten Blick sofort auffällt ist, dass sich im Vergleich zur Volumenberechnung lediglich die Ausgbabe ändert. Hier wird nicht einfach das Volumen ausgeben, sonder tabellarisch die Zeit, die die LKW (abhängig von der Anzahl) brauchen um den Hügel abzutransportieren.
+
+##### Hügelprofile
+![Sequenzdiagramm Profil](https://github.com/JoBo33/Hoehenlinien/blob/main/Example-Pictures/UML-Sequnecy%20diagram%20hill%20profiles.png "Sequenzdiagramm Hügelprofile")
+
+Auch hier bleibt der Anfang gleich zu den beiden vorherigen, anschließend werden jedoch die einzelnen Profile mithilfe einer For-Schleife ermittelt und ausgeben.
+
+##### Höhenlinien 
+
+![Sequenzdiagramm Höhenlinie](https://github.com/JoBo33/Hoehenlinien/blob/main/Example-Pictures/UML-Sequnecy%20diagram%20contour%20lines.png "Sequenzdiagramm Höhenlinie")
+
+Das letzte Diagramm bildet die Höhenlinien ab. Auch hier ist der Beginn wieder gleich wie bei den anderen. Im Vergleich zu den Hügelprofilen beginnt die Schleifen nach dem finden der größten Höhe. Wenn alle Punkte einer Höhe gefunden wurden müssen diese noch sortiert werden. Ist dies erledigt kann man die Höhenlinie der derzeitigen Iteration mithilfe von Catmull-Rom-Splines zeichnen lassen. 
+
+
+
+
+
+
 
