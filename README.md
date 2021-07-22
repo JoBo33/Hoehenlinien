@@ -136,8 +136,8 @@ Für die Berechnung des Volumens wird die Massenberechnung mittels Höhenrost ve
 Da das Raster aus mehreren Quadraten besteht, kann man die durchschnittliche Höhe des gesamten Hügels bestimmen, indem man die einzelnen Ecken gewichtet. Die Gewichtung ist abhänging von der Position der Ecke. Ist sie in lediglich einem Quadrat, hat die Ecke eine Gewichtung von 1, ist sie in zwei Quadraten, hat sie eine Gewichtung von 2 usw..
 Somit ergibt sich folgende Formel:
 
-V = (Grundfläche * (4 * Summe(h4) + 3 * Summe(h3) + 2 * Summe(h2) + Summe(h1)) / 4
-Alternativ: Summe der einzelnen Rasterquadrate
+V = (Grundfläche * (4 * Summe(h4) + 3 * Summe(h3) + 2 * Summe(h2) + Summe(h1)) / 4  
+Alternativ: Summe der einzelnen Rasterquadrate  
 V = Summe(Vr), wobei Vr = Volumen Rasterquadrat = (a²*(h1+h2+h3+h4))/4
 
 ###### Beispiel 
