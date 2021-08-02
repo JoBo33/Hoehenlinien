@@ -28,38 +28,26 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.label3 = new System.Windows.Forms.Label();
-            this.textBoxFilePath = new System.Windows.Forms.TextBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.toolStripMenuItemFile = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemCalculate = new System.Windows.Forms.ToolStripMenuItem();
             this.volumeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optimalNumberOfTrucksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.createToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripComboBox1 = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripMenuItemDraw = new System.Windows.Forms.ToolStripMenuItem();
             this.hillProfilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contourMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.menuStrip1.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(32, 476);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(99, 17);
-            this.label3.TabIndex = 9;
-            this.label3.Text = "Path of the file";
-            this.label3.Visible = false;
-            // 
-            // textBoxFilePath
-            // 
-            this.textBoxFilePath.Location = new System.Drawing.Point(35, 505);
-            this.textBoxFilePath.Name = "textBoxFilePath";
-            this.textBoxFilePath.ReadOnly = true;
-            this.textBoxFilePath.Size = new System.Drawing.Size(262, 22);
-            this.textBoxFilePath.TabIndex = 10;
-            this.textBoxFilePath.Visible = false;
             // 
             // menuStrip1
             // 
@@ -93,7 +81,9 @@
             // 
             this.toolStripMenuItemCalculate.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.volumeToolStripMenuItem,
-            this.optimalNumberOfTrucksToolStripMenuItem});
+            this.optimalNumberOfTrucksToolStripMenuItem,
+            this.createToolStripMenuItem});
+            this.toolStripMenuItemCalculate.Enabled = false;
             this.toolStripMenuItemCalculate.Name = "toolStripMenuItemCalculate";
             this.toolStripMenuItemCalculate.Size = new System.Drawing.Size(82, 24);
             this.toolStripMenuItemCalculate.Text = "Calculate";
@@ -101,22 +91,44 @@
             // volumeToolStripMenuItem
             // 
             this.volumeToolStripMenuItem.Name = "volumeToolStripMenuItem";
-            this.volumeToolStripMenuItem.Size = new System.Drawing.Size(253, 26);
+            this.volumeToolStripMenuItem.Size = new System.Drawing.Size(265, 26);
             this.volumeToolStripMenuItem.Text = "Volume";
             this.volumeToolStripMenuItem.Click += new System.EventHandler(this.volumeToolStripMenuItem_Click);
             // 
             // optimalNumberOfTrucksToolStripMenuItem
             // 
             this.optimalNumberOfTrucksToolStripMenuItem.Name = "optimalNumberOfTrucksToolStripMenuItem";
-            this.optimalNumberOfTrucksToolStripMenuItem.Size = new System.Drawing.Size(253, 26);
+            this.optimalNumberOfTrucksToolStripMenuItem.Size = new System.Drawing.Size(265, 26);
             this.optimalNumberOfTrucksToolStripMenuItem.Text = "Optimal number of trucks";
             this.optimalNumberOfTrucksToolStripMenuItem.Click += new System.EventHandler(this.optimalNumberOfTrucksToolStripMenuItem_Click);
+            // 
+            // createToolStripMenuItem
+            // 
+            this.createToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripComboBox1});
+            this.createToolStripMenuItem.Name = "createToolStripMenuItem";
+            this.createToolStripMenuItem.Size = new System.Drawing.Size(265, 26);
+            this.createToolStripMenuItem.Text = "Create artificially measured";
+            // 
+            // toolStripComboBox1
+            // 
+            this.toolStripComboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.toolStripComboBox1.Items.AddRange(new object[] {
+            "0.1",
+            "0.2",
+            "0.25",
+            "0.5",
+            "default"});
+            this.toolStripComboBox1.Name = "toolStripComboBox1";
+            this.toolStripComboBox1.Size = new System.Drawing.Size(121, 28);
+            this.toolStripComboBox1.SelectedIndex = this.toolStripComboBox1.Items.Count - 1;
             // 
             // toolStripMenuItemDraw
             // 
             this.toolStripMenuItemDraw.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.hillProfilesToolStripMenuItem,
             this.contourMapToolStripMenuItem});
+            this.toolStripMenuItemDraw.Enabled = false;
             this.toolStripMenuItemDraw.Name = "toolStripMenuItemDraw";
             this.toolStripMenuItemDraw.Size = new System.Drawing.Size(56, 24);
             this.toolStripMenuItemDraw.Text = "Draw";
@@ -135,27 +147,61 @@
             this.contourMapToolStripMenuItem.Text = "Contour map";
             this.contourMapToolStripMenuItem.Click += new System.EventHandler(this.contourMapToolStripMenuItem_Click);
             // 
+            // statusStrip1
+            // 
+            this.statusStrip1.BackColor = System.Drawing.Color.White;
+            this.statusStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel1,
+            this.toolStripStatusLabel2});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 529);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(1372, 22);
+            this.statusStrip1.TabIndex = 13;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 17);
+            // 
+            // toolStripStatusLabel2
+            // 
+            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(0, 17);
+            // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.Location = new System.Drawing.Point(0, 28);
+            this.splitContainer1.Name = "splitContainer1";
+            this.splitContainer1.Size = new System.Drawing.Size(1372, 501);
+            this.splitContainer1.SplitterDistance = 598;
+            this.splitContainer1.TabIndex = 14;
+            // 
             // Hillproject
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1372, 551);
-            this.Controls.Add(this.textBoxFilePath);
-            this.Controls.Add(this.label3);
+            this.Controls.Add(this.splitContainer1);
+            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Hillproject";
             this.Text = "Hillvolume and contour lines";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox textBoxFilePath;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemFile;
         private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
@@ -165,6 +211,12 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemDraw;
         private System.Windows.Forms.ToolStripMenuItem hillProfilesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem contourMapToolStripMenuItem;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
+        private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.ToolStripMenuItem createToolStripMenuItem;
+        private System.Windows.Forms.ToolStripComboBox toolStripComboBox1;
     }
 }
 

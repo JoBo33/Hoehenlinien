@@ -50,13 +50,26 @@ namespace ContourMap
 
         private void ExecuteTask(int pressedMenu)
         {
+            splitContainer1.Panel2.Controls.Clear();
             List<double[]> data = new List<double[]> { };
-            
             if (pressedMenu == -1)
             {
-                ExecuteFileTask(data);
+                if (!ExecuteFileTask(data))
+                {
+                    return;
+                }
 
-                AddControlsForFileTask(data);               
+                splitContainer1.Panel1.Controls.Clear();
+                if(data.Count == 0)
+                {
+                    toolStripMenuItemCalculate.Enabled = false;
+                    toolStripMenuItemDraw.Enabled = false;
+                    return;
+                }
+                AddControlsForFileTask(data);
+                toolStripMenuItemCalculate.Enabled = true;
+                toolStripMenuItemDraw.Enabled = true;
+                return;
             }
 
             int pointsInOneRow = 0;
@@ -64,6 +77,8 @@ namespace ContourMap
             {
                 return;
             }
+
+            DetermineIntervalNewMeasuringPoints(ref data, ref pointsInOneRow);
             
             if (pressedMenu == 0) // calc volume
             {
@@ -84,25 +99,84 @@ namespace ContourMap
             {
                 TabControl tabControlHillProfiles = new TabControl()
                 {
-                    Location = new Point(550, 30),
-                    Width = 430,
-                    Height = 329
+                    Location = new Point(55, 20),
+                    Dock = DockStyle.Fill
                 };
-                this.Controls.Add(tabControlHillProfiles);
+                splitContainer1.Panel2.Controls.Add(tabControlHillProfiles);
 
                 for (int i = 0; i < pointsInOneRow; i++)
                 {
                     AddAndFillTabPagesForProfiles(tabControlHillProfiles, data, pointsInOneRow, i);
-
                 }
             }
 
             else if (pressedMenu == 3) // draw contour map
             {
                 PlotModel model = AddPlotViewModelForContourMap();
-
-                Drawing.DetermineContourLines(data, model, pointsInOneRow);               
+                double maxHeight = EditingData.FindMaxHeight(data);
+                Drawing.DetermineContourLines(data, model, pointsInOneRow, maxHeight);               
             }
+        }
+
+        private void DetermineIntervalNewMeasuringPoints(ref List<double[]> data, ref int pointsInOneRow)
+        {
+            if (toolStripComboBox1.SelectedIndex == toolStripComboBox1.Items.Count-1)
+            {
+                return;
+            }
+            else if (toolStripComboBox1.SelectedIndex == 0)
+            {
+                CreateMeasuredPoints(ref data, ref pointsInOneRow, 0.1f);
+            }
+            else if(toolStripComboBox1.SelectedIndex == 1)
+            {
+                CreateMeasuredPoints(ref data, ref pointsInOneRow, 0.2f);
+            }
+            else if (toolStripComboBox1.SelectedIndex == 2)
+            {
+                CreateMeasuredPoints(ref data, ref pointsInOneRow, 0.25f);
+            }
+            else if (toolStripComboBox1.SelectedIndex == 3)
+            {
+                CreateMeasuredPoints(ref data, ref pointsInOneRow, 0.5f);
+            }
+        }
+
+        private void CreateMeasuredPoints(ref List<double[]> data, ref int pointsInOneRow, float interval)
+        {
+            float newSideLength = (float) (data[1][0] - data[0][0]) * interval; 
+            List<double[]> extraPoints = new List<double[]> { };
+            for (int i = 0; i < data.Count - 1; i++)
+            {
+                for (float j = newSideLength; j < data[i + 1][0] - data[i][0]; j += newSideLength)
+                {
+
+                    double[] newPoint = { data[i][0] + j * (data[i + 1][0] - data[i][0]), data[i][1], data[i][2] + j * (data[i + 1][2] - data[i][2]) };
+
+                    extraPoints.Add(newPoint);
+                }
+            }
+            foreach (double[] item in extraPoints)
+            {
+                data.Add(item);
+            }
+            extraPoints.Clear();
+            EditingData.SortData(data);
+            Calculation.DeterminePointsInOneRow(data, ref pointsInOneRow);
+            for (int i = 0; i < data.Count - pointsInOneRow; i++)
+            {
+                for (float j = newSideLength; j < data[i + pointsInOneRow][1] - data[i][1]; j += newSideLength)
+                {
+                    double[] newPoint = { data[i][0], data[i][1] + j * (data[i + pointsInOneRow][1] - data[i][1]), data[i][2] + j * (data[i + pointsInOneRow][2] - data[i][2]) };
+
+                    extraPoints.Add(newPoint);
+                }
+            }
+            foreach (double[] item in extraPoints)
+            {
+                data.Add(item);
+            }
+            EditingData.SortData(data);
         }
 
         private void AddControlsForFileTask(List<double[]> data)
@@ -111,10 +185,9 @@ namespace ContourMap
             {
                 ColumnCount = 4,
                 RowCount = data.Count,
-                Location = new Point(20, 30),
+                Location = new Point(10, 20),
                 RowHeadersVisible = false,
-                Width = 430,
-                Height = 329
+                Dock = DockStyle.Fill
 
             };
 
@@ -123,7 +196,7 @@ namespace ContourMap
             dataGridViewFileContent.Columns[2].HeaderText = "y";
             dataGridViewFileContent.Columns[3].HeaderText = "z";
 
-            this.Controls.Add(dataGridViewFileContent);
+            splitContainer1.Panel1.Controls.Add(dataGridViewFileContent);
 
             for (int i = 0; i < data.Count; i++)
             {
@@ -132,32 +205,41 @@ namespace ContourMap
                 dataGridViewFileContent.Rows[i].Cells[2].Value = data[i][1];
                 dataGridViewFileContent.Rows[i].Cells[3].Value = data[i][2];
             }
-            label3.Visible = true;
-            textBoxFilePath.Visible = true;
         }
 
-        private void ExecuteFileTask(List<double[]> data)
+        private bool ExecuteFileTask(List<double[]> data)
         {
             OpenFileDialog openDlg = new OpenFileDialog();
-            openDlg.ShowDialog();
+            openDlg.Filter = "txt files (*.txt)|*.txt";
+            
+            if(openDlg.ShowDialog() != DialogResult.OK)
+            {
+                return false;
+            }
             string path = openDlg.FileName;
-            textBoxFilePath.Text = path;
+            toolStripStatusLabel1.Text = path;
             try
             {
-                StreamReader str = new StreamReader(textBoxFilePath.Text);
+                StreamReader str = new StreamReader(toolStripStatusLabel1.Text);
                 string line = str.ReadLine();
                 EditingData.FillData(line, data);
             }
             catch (FileNotFoundException ex)
             {
                 MessageBox.Show("The file " + ex.FileName + " could not be found, please check the file path.");
-                return;
+                return false;
             }
+            catch(ArgumentException e)
+            {
+                MessageBox.Show(e.Message);
+                return false;
+            }
+            return true;
         }
 
         private bool PrepareVariables(List<double[]> data, ref int pointsInOneRow)
         {
-            if (textBoxFilePath.Text == string.Empty)
+            if (toolStripStatusLabel1.Text == string.Empty)
             {
                 MessageBox.Show("Pls enter a file path.");
                 return false;
@@ -165,7 +247,7 @@ namespace ContourMap
 
             try
             {
-                StreamReader str = new StreamReader(textBoxFilePath.Text);
+                StreamReader str = new StreamReader(toolStripStatusLabel1.Text);
                 string line = str.ReadLine();
                 EditingData.FillData(line, data);
             }
@@ -184,26 +266,26 @@ namespace ContourMap
         {
             Label labelVol = new Label()
             {
-                Location = new Point(500, 205),
+                Location = new Point(50, 150),
                 Text = "V:",
                 Width = 20
 
             };
             Label labelMeter = new Label()
             {
-                Location = new Point(620, 205),
+                Location = new Point(162, 155),
                 Text = "m"
             };
             TextBox textBoxVolume = new TextBox()
             {
                 ReadOnly = true,
-                Location = new Point(520, 200),
+                Location = new Point(72, 150),
                 Width = 100
             };
 
-            this.Controls.Add(labelVol);
-            this.Controls.Add(labelMeter);
-            this.Controls.Add(textBoxVolume);
+            splitContainer1.Panel2.Controls.Add(labelVol);
+            splitContainer1.Panel2.Controls.Add(labelMeter);
+            splitContainer1.Panel2.Controls.Add(textBoxVolume);
             return textBoxVolume;
         }
 
@@ -211,15 +293,14 @@ namespace ContourMap
         {
             DataGridView dataGridViewTrucks = new DataGridView()
             {
-                Location = new Point(550, 30),
-                Width = 200,
-                Height = 329,
+                Location = new Point(55, 20),
+                Dock = DockStyle.Fill,
                 RowHeadersVisible = false,
                 ColumnCount = 2
             };
             dataGridViewTrucks.Columns[0].HeaderText = "Number of trucks";
             dataGridViewTrucks.Columns[1].HeaderText = "Time";
-            this.Controls.Add(dataGridViewTrucks);
+            splitContainer1.Panel2.Controls.Add(dataGridViewTrucks);
             return dataGridViewTrucks;
         }
 
@@ -244,7 +325,8 @@ namespace ContourMap
             PlotView plotView2 = new PlotView() { BackColor = Color.White, Dock = DockStyle.Fill };
             plotView2.Model = plot;
             tabPage.Controls.Add(plotView2);
-            Drawing.DrawColumnSeries(ref plot, data, pointsInOneRow, i);
+            double maxHeight = EditingData.FindMaxHeight(data);
+            Drawing.DrawColumnSeries(ref plot, data, pointsInOneRow, maxHeight, i);
         }
 
         private PlotModel AddPlotViewModelForContourMap()
@@ -252,13 +334,12 @@ namespace ContourMap
             PlotView plotContour = new PlotView()
             {
                 BackColor = Color.White,
-                Location = new Point(550, 30),
-                Width = 430,
-                Height = 329
+                Location = new Point(55, 20),
+                Dock = DockStyle.Fill
             };
             PlotModel model = new PlotModel();
             plotContour.Model = model;
-            this.Controls.Add(plotContour);
+            splitContainer1.Panel2.Controls.Add(plotContour);
             return model;
         }
 
