@@ -179,7 +179,7 @@ Zu Beginn wird die Datei ausgelesen und die Variablen für die Berechnung vorber
 ## UML-Klassendiagramm
 ![Klassendiagramm](https://github.com/JoBo33/Hoehenlinien/blob/main/Example-Pictures/UML-Classdiagram%20Hillproject.png "Beispiel Klassendiagramm")
 
-Das Projekt besteht aus vier Klassen. Die Hauptklasse ist "Form1(Hillproject)". Die weiteren Klassen dienen der Unterstützung. In der Klasse "Calculation" weerden die Berechnungen durchgeführt, in der Klasse "Drawing" werden die Profile und Höhenlinien gezeichnet und die Klasse "EditingData" ist zum Bearbeiten der Messdaten. Die Hauptklasse ruft Methoden der anderen drei Klassen auf, daher ist die Beziehung zwischen den Klassen eine gerichtete Assoziation. Dasselbe gilt für die Beziehung zwischen "Drawing" und "EditingData".
+Das Projekt besteht aus vier Klassen. Die Hauptklasse ist "Form1(Hillproject)". Die weiteren Klassen dienen der Unterstützung. In der Klasse "Calculation" weerden die Berechnungen durchgeführt, in der Klasse "Drawing" werden die Profile und Höhenlinien gezeichnet und die Klasse "EditingData" ist zum Bearbeiten der Messdaten. Die Hauptklasse ruft Methoden der anderen drei Klassen auf, daher ist die Beziehung zwischen den Klassen eine gerichtete Assoziation. Dasselbe gilt für die Beziehung zwischen "Drawing" und "Calculation".
 
 ## UML-Sequenzdiagramme 
 ##### Dateiauslesen
@@ -195,18 +195,18 @@ Nachdem die Datei erfolgreich ausgelesen wurde kann das Volumen des Hügels best
 ##### Anzahl LKW
 ![Sequenzdiagramm LKW](https://github.com/JoBo33/Hoehenlinien/blob/main/Example-Pictures/UML-Sequnecy%20diagram%20number%20of%20trucks.png "Sequenzdiagramm Anzahl LKW")
 
-Was einem auf dem ersten Blick sofort auffällt ist, dass sich im Vergleich zur Volumenberechnung lediglich die Ausgbabe ändert. Hier wird nicht einfach das Volumen ausgeben, sonder tabellarisch die Zeit, die die LKW (abhängig von der Anzahl) brauchen um den Hügel abzutransportieren.
+Was einem auf dem ersten Blick sofort auffällt ist, dass sich im Vergleich zur Volumenberechnung lediglich die Ausgbabe ändert. Hier wird nicht einfach das Volumen ausgeben, sondern tabellarisch die Zeit, die die LKW (abhängig von der Anzahl) brauchen um den Hügel abzutransportieren, welche zuvor berechnet wird.
 
 ##### Hügelprofile
 ![Sequenzdiagramm Profil](https://github.com/JoBo33/Hoehenlinien/blob/main/Example-Pictures/UML-Sequnecy%20diagram%20hill%20profiles.png "Sequenzdiagramm Hügelprofile")
 
-Auch hier bleibt der Anfang gleich zu den beiden vorherigen, anschließend werden jedoch die einzelnen Profile mithilfe einer For-Schleife ermittelt und ausgeben.
+Auch hier bleibt der Anfang gleich zu den beiden vorherigen, anschließend wird die maximale Höhe bestimmt. Diese dient der Skalierung der Höhenaxe bei der späteren Darstellung. Zuletzt werden die einzelnen Profile mithilfe einer For-Schleife ermittelt und ausgeben.
 
 ##### Höhenlinien 
 
 ![Sequenzdiagramm Höhenlinie](https://github.com/JoBo33/Hoehenlinien/blob/main/Example-Pictures/UML-Sequnecy%20diagram%20contour%20lines.png "Sequenzdiagramm Höhenlinie")
 
-Das letzte Diagramm bildet die Höhenlinien ab. Auch hier ist der Beginn wieder gleich wie bei den anderen. Im Vergleich zu den Hügelprofilen beginnt die Schleifen nach dem finden der größten Höhe. Wenn alle Punkte einer Höhe gefunden wurden müssen diese noch sortiert werden. Ist dies erledigt kann man die Höhenlinie der derzeitigen Iteration mithilfe von Catmull-Rom-Splines zeichnen lassen. 
+Das letzte Diagramm bildet die Höhenlinien ab. Auch hier ist der Beginn wieder gleich wie bei den anderen. Anschließend wird auch hier die maximale Höhe bestimmt, um später zu wissen wann die Schleife enden muss. Daraufhin werden dann die einzelnen Höhenlinien bestimmt. Ist dies erledigt kann man die Höhenlinie der derzeitigen Iteration mithilfe von Catmull-Rom-Splines zeichnen lassen. 
 
 
 
