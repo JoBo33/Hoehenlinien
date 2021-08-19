@@ -22,37 +22,46 @@ namespace ContourMap
             InitializeComponent();
         }
 
+        enum PressedMenuItem
+        {
+            OpenFile,
+            CalculateVolume,
+            CalculateTrucks,
+            DrawHillProfiles,
+            DrawContourLines
+        };
+
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ExecuteTask(-1);
+            ExecuteTask(PressedMenuItem.OpenFile);
         }
 
         private void volumeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ExecuteTask(0);
+            ExecuteTask(PressedMenuItem.CalculateVolume);
         }
 
         private void optimalNumberOfTrucksToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ExecuteTask(1);
+            ExecuteTask(PressedMenuItem.CalculateTrucks);
         }
 
         private void hillProfilesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ExecuteTask(2);
+            ExecuteTask(PressedMenuItem.DrawHillProfiles);
         }
 
         private void contourMapToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ExecuteTask(3);
+            ExecuteTask(PressedMenuItem.DrawContourLines);
         }
 
 
-        private void ExecuteTask(int pressedMenu)
+        private void ExecuteTask(PressedMenuItem pressedMenuItem)
         {
             splitContainer1.Panel2.Controls.Clear();
             List<double[]> data = new List<double[]> { };
-            if (pressedMenu == -1)
+            if (pressedMenuItem == PressedMenuItem.OpenFile)
             {
                 if (!ExecuteFileTask(data))
                 {
@@ -80,7 +89,7 @@ namespace ContourMap
 
             DetermineIntervalNewMeasuringPoints(ref data, ref pointsInOneRow);
             
-            if (pressedMenu == 0) // calc volume
+            if (pressedMenuItem == PressedMenuItem.CalculateVolume) // calc volume
             {
                 TextBox textBoxVolume = AddControlsForVolume();
 
@@ -88,14 +97,14 @@ namespace ContourMap
                 textBoxVolume.Text = volume.ToString();
             }
 
-            else if (pressedMenu == 1) // calc trucks
+            else if (pressedMenuItem == PressedMenuItem.CalculateTrucks) // calc trucks
             {
                 DataGridView dataGridViewTrucks = AddDataGridForTrucks();
                 double volume = Calculation.CalculateVolume(data, pointsInOneRow);
                 FillDataGridViewTrucks(dataGridViewTrucks, volume);
             }
 
-            else if (pressedMenu == 2) // draw profiles
+            else if (pressedMenuItem == PressedMenuItem.DrawHillProfiles) // draw profiles
             {
                 TabControl tabControlHillProfiles = new TabControl()
                 {
@@ -110,11 +119,28 @@ namespace ContourMap
                 }
             }
 
-            else if (pressedMenu == 3) // draw contour map
+            else if (pressedMenuItem == PressedMenuItem.DrawContourLines) // draw contour map
             {
                 PlotModel model = AddPlotViewModelForContourMap();
+                LineSeries gridPoints = new LineSeries()
+                {
+                    MarkerType = MarkerType.Circle,
+                    LineStyle = LineStyle.None,
+                    Color = OxyColors.Black
+                };
+                foreach (double[] point in data)
+                {
+
+                    gridPoints.Points.Add(new DataPoint(point[0], point[1]));
+                }
+
+                model.Series.Add(gridPoints);
+
+                List<Vector[]> edges = new List<Vector[]> { };
+                edges = Calculation.DelaunayTriangulation(data, model);
                 double maxHeight = EditingData.FindMaxHeight(data);
-                Drawing.DetermineContourLines(data, model, pointsInOneRow, maxHeight);               
+                //Calculation.DetermineContourLines(data, model, pointsInOneRow, maxHeight);
+                Calculation.DetermineContourLines(edges, model, maxHeight);
             }
         }
 
@@ -141,7 +167,7 @@ namespace ContourMap
                 CreateMeasuredPoints(ref data, ref pointsInOneRow, 0.5f);
             }
         }
-
+        
         private void CreateMeasuredPoints(ref List<double[]> data, ref int pointsInOneRow, float interval)
         {
             float newSideLength = (float) (data[1][0] - data[0][0]) * interval; 
@@ -151,7 +177,7 @@ namespace ContourMap
                 for (float j = newSideLength; j < data[i + 1][0] - data[i][0]; j += newSideLength)
                 {
 
-                    double[] newPoint = { data[i][0] + j * (data[i + 1][0] - data[i][0]), data[i][1], data[i][2] + j * (data[i + 1][2] - data[i][2]) };
+                    double[] newPoint = { data[i][0] + j, data[i][1], data[i][2] + j * (data[i + 1][2] - data[i][2]) };
 
                     extraPoints.Add(newPoint);
                 }
@@ -167,7 +193,7 @@ namespace ContourMap
             {
                 for (float j = newSideLength; j < data[i + pointsInOneRow][1] - data[i][1]; j += newSideLength)
                 {
-                    double[] newPoint = { data[i][0], data[i][1] + j * (data[i + pointsInOneRow][1] - data[i][1]), data[i][2] + j * (data[i + pointsInOneRow][2] - data[i][2]) };
+                    double[] newPoint = { data[i][0], data[i][1] + j , data[i][2] + j * (data[i + pointsInOneRow][2] - data[i][2]) };
 
                     extraPoints.Add(newPoint);
                 }
@@ -187,7 +213,8 @@ namespace ContourMap
                 RowCount = data.Count,
                 Location = new Point(10, 20),
                 RowHeadersVisible = false,
-                Dock = DockStyle.Fill
+                Dock = DockStyle.Fill,
+                ReadOnly = true
 
             };
 
@@ -311,7 +338,7 @@ namespace ContourMap
             for (int i = 1; i <= numberOfTrucks; i++)
             {
                 dataGridViewTrucks.Rows[i - 1].Cells[0].Value = i;
-                dataGridViewTrucks.Rows[i - 1].Cells[1].Value = Math.Ceiling((volume / 7) / i) * 30;
+                dataGridViewTrucks.Rows[i - 1].Cells[1].Value = Calculation.CalculateTimeTrucksNeeded(volume, i);
             }
         }
 

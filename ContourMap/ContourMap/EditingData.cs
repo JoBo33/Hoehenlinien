@@ -18,6 +18,11 @@ namespace ContourMap
             for (int i = 0; i < line.Length; i++)
             {
                 double tmp;
+                if(!(double.TryParse(line[i].ToString(), out tmp) || line[i].ToString() == "." || line[i].ToString() == "," || line[i].ToString() == ";"))
+                {
+                    MessageBox.Show("The file could not be parsed. Please check the file content for mistakes.");
+                    return;
+                }
                 if (double.TryParse(line[i].ToString(), out tmp) || line[i].ToString() == "." || line[i].ToString() == ",")
                 {
                     point += line[i];
@@ -40,10 +45,17 @@ namespace ContourMap
                         {
                             if (double.TryParse(point[j].ToString(), out tmp) || point[j].ToString() == ".")
                             {
-                                number += point[j];
+                                if (point[j].ToString() == ".")
+                                {
+                                    number += ",";
+                                }
+                                else
+                                {
+                                    number += point[j];
+                                }
                             }
 
-                            if (point[j].ToString() == ",")
+                            else if (point[j].ToString() == ",")
                             {
                                 coordinate[count] = Convert.ToDouble(number);
                                 count++;
@@ -94,11 +106,14 @@ namespace ContourMap
                     }
                 }
             }
-            for (int i = 0; i < data.Count - 1; i++)
+            for (int i = 0; i < data.Count; i++)
             {
-                if (data[i][1] == data[i + 1][1] && data[i][0] > data[i + 1][0])
+                for (int j = 0; j < data.Count - 1; j++)
                 {
-                    Swap(ref data, i, i + 1);
+                    if (data[j][1] == data[j + 1][1] && data[j][0] > data[j + 1][0])
+                    {
+                        Swap(ref data, j, j + 1);
+                    }
                 }
             }
         }

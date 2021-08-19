@@ -11,52 +11,17 @@ namespace ContourMap
 {
     class Drawing
     {
-        public static void DetermineContourLines(List<double[]> data, PlotModel model, int pointsInOneRow)
-        {
-            for (int i = 0; i <= EditingData.FindMaxHeight(data); i += (1)) 
-            {
-                List<double[]> contourLine = new List<double[]> { };
 
-                for (int j = 0; j < data.Count - 1; j += (1))
-                {
-                    if (j < data.Count - pointsInOneRow)
-                    {
-                        if (data[j][2] < i && data[j + pointsInOneRow][2] > i || data[j][2] > i && data[j + pointsInOneRow][2] < i)
-                        {
-                            double tmp = (i - data[j][2]) / (data[j + pointsInOneRow][2] - data[j][2]);
-                            double[] pointOnHeight = { data[j][0] + tmp * (data[j + pointsInOneRow][0] - data[j][0]), data[j][1] + tmp * (data[j + pointsInOneRow][1] - data[j][1]), i };
-                            contourLine.Add(pointOnHeight);
-                        }
-                    }
-                    if ((j % pointsInOneRow) - (pointsInOneRow - 1) == 0 && j != 0)
-                    {
-                        continue;
-                    }
-                    if (data[j][2] < i && data[j + 1][2] > i || data[j][2] > i && data[j + 1][2] < i)
-                    {
-                        double tmp = (i - data[j][2]) / (data[j + 1][2] - data[j][2]);
-                        double[] pointOnHeight = { data[j][0] + tmp * (data[j + 1][0] - data[j][0]), data[j][1] + tmp * (data[j + 1][1] - data[j][1]), i };
-                        contourLine.Add(pointOnHeight);
-                    }
-                }
 
-                if (contourLine.Count != 0)
-                {
-                    sortContourPoints(ref contourLine);
-                    CatmullRomSplines(contourLine, model);
-                }
-            }
-        }
-
-        private static void CatmullRomSplines(List<double[]> contourLine, PlotModel model)
+        public static void CatmullRomSplines(List<double[]> contourLine, PlotModel model)
         {
             LineSeries line = new LineSeries();
 
-            for (float t = 0; t < contourLine.Count - 1; t += 0.01f)
+            for (float t = 0; t <= contourLine.Count; t += 0.01f)
             {
                 int p1 = (int)t;
-                int p2 = (p1 + 1) % (contourLine.Count - 1);
-                int p3 = (p2 + 1) % (contourLine.Count - 1);
+                int p2 = (p1 + 1) % (contourLine.Count );
+                int p3 = (p2 + 1) % (contourLine.Count );
                 int p0 = p1 >= 1 ? p1 - 1 : contourLine.Count - 1;
 
                 float tmp = t - (int)t;
@@ -75,49 +40,48 @@ namespace ContourMap
             }
 
             model.Series.Add(line);
+
+
             model.InvalidatePlot(true);
         }
 
-        public static void sortContourPoints(ref List<double[]> contourLine)
+        public static List<double[]> SortContourPoints(ref List<double[]> contourLine)
         {
-            List<double[]> sortedContourLine = new List<double[]> { };
-
-            for (int i = 0; i < contourLine.Count; i++)
+            List<double[]> sortedContourLine = new List<double[]> { contourLine[0] };
+            contourLine.RemoveAt(0);
+            for (int j = 0; j < sortedContourLine.Count; j++)
             {
-                for (int j = 0; j < contourLine.Count - 1; j++)
+                int removeIndex = 0;
+                double distance = Math.Pow(sortedContourLine[j][0] - contourLine[0][0], 2) + Math.Pow(sortedContourLine[j][1] - contourLine[0][1], 2); // distanz von punkt j zu einem punkt der auf dem kreis liegen könnte
+                double[] chosenPoint = contourLine[0];
+                for (int i = 1; i < contourLine.Count; i++)
                 {
-                    if (contourLine[j][0] > contourLine[j + 1][0])
+                    double testDistance = Math.Pow(sortedContourLine[j][0] - contourLine[i][0], 2) + Math.Pow(sortedContourLine[j][1] - contourLine[i][1], 2); // dinstanz von punkt j zu punkt i 
+                    if (distance > testDistance)  // wurde ein punkt gefunden der näher an dem derzeitigen endpunkt liegt, werden die daten dementsprechend angepasst
                     {
-                        EditingData.Swap(ref contourLine, j, j + 1);
+                        distance = testDistance;
+                        chosenPoint = contourLine[i];
+                        removeIndex = i;
                     }
                 }
-            }
-
-            for (int i = 0; i < contourLine.Count - 1; i++)
-            {
-                if (contourLine[i][0] == contourLine[i + 1][0] && contourLine[i][1] > contourLine[i + 1][1])
+                double distanceToStart = Math.Pow(sortedContourLine[0][0] - sortedContourLine[j][0], 2) + Math.Pow(sortedContourLine[0][1] - sortedContourLine[j][1], 2); // distanz vom startpunkt des kreises zum letzten gefundenen punkt des kreises
+                if (j > 1 && distance > distanceToStart) // ist die kürzeste distanz von dem endpunkt zu einem punkt der noch nicht im kreis ist länger als die distanz zwischen endpunkt und startpunkt wird der kreis geschlossen
                 {
-                    EditingData.Swap(ref contourLine, i, i + 1);
+                    return sortedContourLine;
+                }
+                sortedContourLine.Add(chosenPoint);  // punkt mit der kürzesten distanz wird zum kreis hinzugefüngt
+                contourLine.RemoveAt(removeIndex); // der punkt wird aus der liste der nicht enthaltenen punkte entfernt
+                if (contourLine.Count == 0)
+                {
+                    return sortedContourLine;
                 }
             }
+            return sortedContourLine;
+                }
 
-            for (int i = 0; i < contourLine.Count; i += 2)
-            {
-                sortedContourLine.Add(contourLine[i]);
-            }
-
-            for (int i = contourLine.Count - 1; i >= 0; i -= 2)
-            {
-                sortedContourLine.Add(contourLine[i]);
-            }
-
-            contourLine = sortedContourLine;
-        }
-
-        public static void DrawColumnSeries(ref PlotModel plot, List<double[]> data, int pointsInOneRow, int rowNumber = 0)
+        public static void DrawColumnSeries(ref PlotModel plot, List<double[]> data, int pointsInOneRow, double maxHeight, int rowNumber = 0)
         {
-            double maxHeight = EditingData.FindMaxHeight(data);
-
+           
             ColumnSeries columnSeries = PrepareColumnSeries(plot, maxHeight);
 
             for (int i = 0; i < pointsInOneRow; i++)
@@ -143,6 +107,21 @@ namespace ContourMap
             plot.Axes.Add(xAxis);
 
             return columnSeries;
+        }
+
+        public static void DrawEdges(List<Vector[]> edges, PlotModel model)
+        {
+            for (int i = 0; i < edges.Count; i++)
+            {
+                LineSeries edge = new LineSeries()
+                {
+                    Color = OxyColors.Red,
+                    MarkerType = MarkerType.Circle
+                };
+                edge.Points.Add(new DataPoint(edges[i][0].X, edges[i][0].Y));
+                edge.Points.Add(new DataPoint(edges[i][1].X, edges[i][1].Y));
+                model.Series.Add(edge);
+            }
         }
     }
 }
