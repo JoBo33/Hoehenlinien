@@ -124,12 +124,12 @@ s in Gerade einsetzen
 ![Beispiel Punkt](https://github.com/JoBo33/Hoehenlinien/blob/main/Example-Pictures/Example%20Point.png "Erhalte Punkt durch einsetzen")
 Somit wurde der erste Punkt (1.6/3/5.8) gefunden der auf der Höhenlinie 5.8 liegt.
 
-Dies muss nun noch für mindestens 3 weitere Punkte durchgeführt werden. Anschließend kann man mithilfe von Catmull-Rom-Splines die Höhenlinien bestimmen. Die Splines funktionieren indem man zwischen 2 Punkten ein eine Linie schafft, die abhängig von einer Gewichtung zwischen den beiden Punkten und den beiden nächsten Punkten ist. Dadurch werden die Höhenlinien allein unter der Bedingung der Punkte, die auf dieser Höhe liegen, bestimmt.
+Dies muss nun noch für mindestens 2 weitere Punkte durchgeführt werden. Anschließend kann man mithilfe von Catmull-Rom-Splines die Höhenlinien bestimmen. Die Splines funktionieren indem man zwischen 2 Punkten ein eine Linie schafft, die abhängig von einer Gewichtung zwischen den beiden Punkten und den beiden nächsten Punkten ist. Dadurch werden die Höhenlinien allein unter der Bedingung der Punkte, die auf dieser Höhe liegen, bestimmt.
 
 ### Struktogramm Höhenlinien
 ![Beispiel Höhenlinien](https://github.com/JoBo33/Hoehenlinien/blob/main/Example-Pictures/Struktogramm%20Determine%20contour%20lines.png "Struktogramm Höhenlinien")
 
-Erst werden die Variablen vorbereitet. Die äußere For-Schleife beduetet das für jede Iteration eine Höhenlinie auf der Höhe i gesucht wird. Die innere Schleife ist für das Bestimmen von Punkten auf der Höhe i. Hierfür werden zuerst die Höhen aller senkrechten Nachbarpunkten verglichen und wenn möglich den Punkt zwischen diesen bestimmt, der auf Höhe i liegt. Anschlißend wird dasselbe zwischen horizontalen Nachbarknoten vollzogen wobei immer der Knoten j mit dem rechten Nachbarn verglichen wird, sodass der letzte Punkt einer Reihe übersprungen wird, da dieser keinen rechten Nachbarn besitzt. Zum Schluss, wenn alle Punkte einer Höhe gefunden wurden, kann die Höhenlinie mithilfe von Catmull-Rom-Splines gezeichnet werden. 
+Erst werden die Variablen vorbereitet. Die äußere For-Schleife bedeutet, dass für jede Iteration eine Höhenlinie auf der Höhe i gesucht wird. Die innere Schleife ist für das Bestimmen von Punkten auf der Höhe i. Hierfür werden zuerst die Höhen aller senkrechten Nachbarpunkten verglichen und wenn möglich den Punkt zwischen diesen bestimmt, der auf Höhe i liegt. Anschließend wird dasselbe zwischen horizontalen Nachbarknoten vollzogen, wobei immer der Knoten j mit dem rechten Nachbarn verglichen wird, sodass der letzte Punkt einer Reihe übersprungen wird, da dieser keinen rechten Nachbarn besitzt. Zum Schluss, wenn alle Punkte einer Höhe gefunden wurden, kann die Höhenlinie mithilfe von Catmull-Rom-Splines gezeichnet werden. 
 
 ## Volumen berechnen
 Für die Berechnung des Volumens wird die Massenberechnung mittels Höhenrost verwendet. Einfach erklärt berechnet man das Volumen indem man die Grundfläche von einem Rasterquadrat mit der durchschnittlichen Höhe der vier Ecken mulipliziert. Als Beispiel soll das Beispielraster vom Anfang genutzt werden. 
@@ -179,7 +179,7 @@ Zu Beginn wird die Datei ausgelesen und die Variablen für die Berechnung vorber
 ## UML-Klassendiagramm
 ![Klassendiagramm](https://github.com/JoBo33/Hoehenlinien/blob/main/Example-Pictures/UML-Classdiagram%20Hillproject.png "Beispiel Klassendiagramm")
 
-Das Projekt besteht aus vier Klassen. Die Hauptklasse ist "Form1(Hillproject)". Die weiteren Klassen dienen der Unterstützung. In der Klasse "Calculation" weerden die Berechnungen durchgeführt, in der Klasse "Drawing" werden die Profile und Höhenlinien gezeichnet und die Klasse "EditingData" ist zum Bearbeiten der Messdaten. Die Hauptklasse ruft Methoden der anderen drei Klassen auf, daher ist die Beziehung zwischen den Klassen eine gerichtete Assoziation. Dasselbe gilt für die Beziehung zwischen "Drawing" und "Calculation".
+Das Projekt besteht aus vier Klassen. Die Hauptklasse ist "Hillproject". Die weiteren Klassen dienen der Unterstützung. In der Klasse "Calculation" weerden die Berechnungen durchgeführt, in der Klasse "Drawing" werden die Profile und Höhenlinien gezeichnet und die Klasse "EditingData" ist zum Bearbeiten der Messdaten. Die Hauptklasse ruft Methoden der anderen drei Klassen auf, daher ist die Beziehung zwischen den Klassen eine gerichtete Assoziation. Dasselbe gilt für die Beziehung zwischen "Drawing" und "Calculation".
 
 ## UML-Sequenzdiagramme 
 ##### Dateiauslesen
@@ -190,7 +190,7 @@ Die Klasse "Hillproject" erstellt ein Objekt der Klasse "OpenFileDialog" und ruf
 ##### Volumenberechnung
 ![Sequenzdiagramm Volumen](https://github.com/JoBo33/Hoehenlinien/blob/main/Example-Pictures/UML-Sequnecy%20diagram%20volumecalculation.png "Sequenzdiagramm Volumenberechnung")
 
-Nachdem die Datei erfolgreich ausgelesen wurde kann das Volumen des Hügels bestimmt werden. Zur Bestimmung des Volumens müssen die Messdaten zuerst in die Rastermusterreihenfolge gebracht werden. Anschließend werden die Höhen angepasst, da der Hügel sonst immer auf die Höhe des Meeresspiegels reduziert werden würde, was teilweise ein Loch im Boden hinterlassen kann. Bevor das Volumen entgülitg berechnet werden kann muss herausgefunden werden, wie viele Punkte in einer Zeile des Rasters sind. Anschließend wird das Volumen wie oben beschrieben berechnet und schlussendlich ausgegeben.
+Nachdem die Datei erfolgreich ausgelesen wurde, kann das Volumen des Hügels bestimmt werden. Zur Bestimmung des Volumens müssen die Messdaten zuerst in die Rastermusterreihenfolge gebracht werden. Anschließend werden die Höhen angepasst, da der Hügel sonst immer auf die Höhe des Meeresspiegels reduziert werden würde, was teilweise ein Loch im Boden hinterlassen kann. Bevor das Volumen entgülitg berechnet werden kann muss herausgefunden werden, wie viele Punkte in einer Zeile des Rasters sind. Anschließend wird das Volumen wie oben beschrieben berechnet und schlussendlich ausgegeben.
 
 ##### Anzahl LKW
 ![Sequenzdiagramm LKW](https://github.com/JoBo33/Hoehenlinien/blob/main/Example-Pictures/UML-Sequnecy%20diagram%20number%20of%20trucks.png "Sequenzdiagramm Anzahl LKW")
