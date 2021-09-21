@@ -28,8 +28,7 @@ namespace ContourMap
             CalculateVolume,
             CalculateTrucks,
             DrawHillProfiles,
-            DrawContourLines,
-            DrawDelaunayTriangulation
+            DrawContourLines
         };
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -57,10 +56,6 @@ namespace ContourMap
             ExecuteTask(PressedMenuItem.DrawContourLines);
         }
 
-        private void delaunayTriangulationToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ExecuteTask(PressedMenuItem.DrawDelaunayTriangulation);
-        }
 
         private void ExecuteTask(PressedMenuItem pressedMenuItem)
         {
@@ -121,8 +116,7 @@ namespace ContourMap
                 }
             }
 
-
-            else if (pressedMenuItem == PressedMenuItem.DrawContourLines || pressedMenuItem == PressedMenuItem.DrawDelaunayTriangulation) // draw contour map or delaunay
+            else if (pressedMenuItem == PressedMenuItem.DrawContourLines) // draw contour map or delaunay
             {
                 PlotModel model = AddPlotViewModelForContourMap();
                 LineSeries gridPoints = new LineSeries()
