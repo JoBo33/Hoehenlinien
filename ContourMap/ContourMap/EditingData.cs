@@ -130,5 +130,30 @@ namespace ContourMap
             }
             return max;
         }
+
+        public static double FindMaxYValue(List<double[]> data)
+        {
+            double maxY = double.MinValue;
+            for (int i = 0; i < data.Count; i++)
+            {
+                if (data[i][1] > maxY)
+                {
+                    maxY = Math.Ceiling(data[i][1]);
+                }
+            }
+            return maxY;
+        }
+        public static double FindMaxXValue(List<double[]> data)
+        {
+            double maxX = double.MinValue;
+            for (int i = 0; i < data.Count; i++)
+            {
+                if (data[i][0] > maxX)
+                {
+                    maxX = Math.Ceiling(data[i][0]);
+                }
+            }
+            return maxX;
+        }
     }
 }

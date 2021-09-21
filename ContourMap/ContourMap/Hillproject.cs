@@ -28,7 +28,8 @@ namespace ContourMap
             CalculateVolume,
             CalculateTrucks,
             DrawHillProfiles,
-            DrawContourLines
+            DrawContourLines,
+            DrawDelaunayTriangulation
         };
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -52,10 +53,14 @@ namespace ContourMap
         }
 
         private void contourMapToolStripMenuItem_Click(object sender, EventArgs e)
-        {
+        { 
             ExecuteTask(PressedMenuItem.DrawContourLines);
         }
 
+        private void delaunayTriangulationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ExecuteTask(PressedMenuItem.DrawDelaunayTriangulation);
+        }
 
         private void ExecuteTask(PressedMenuItem pressedMenuItem)
         {
@@ -86,8 +91,6 @@ namespace ContourMap
             {
                 return;
             }
-
-            DetermineIntervalNewMeasuringPoints(ref data, ref pointsInOneRow);
             
             if (pressedMenuItem == PressedMenuItem.CalculateVolume) // calc volume
             {
@@ -112,14 +115,14 @@ namespace ContourMap
                     Dock = DockStyle.Fill
                 };
                 splitContainer1.Panel2.Controls.Add(tabControlHillProfiles);
-
                 for (int i = 0; i < pointsInOneRow; i++)
                 {
                     AddAndFillTabPagesForProfiles(tabControlHillProfiles, data, pointsInOneRow, i);
                 }
             }
 
-            else if (pressedMenuItem == PressedMenuItem.DrawContourLines) // draw contour map
+
+            else if (pressedMenuItem == PressedMenuItem.DrawContourLines || pressedMenuItem == PressedMenuItem.DrawDelaunayTriangulation) // draw contour map or delaunay
             {
                 PlotModel model = AddPlotViewModelForContourMap();
                 LineSeries gridPoints = new LineSeries()
@@ -135,75 +138,16 @@ namespace ContourMap
                 }
 
                 model.Series.Add(gridPoints);
-
-                List<Vector[]> edges = new List<Vector[]> { };
-                edges = Calculation.DelaunayTriangulation(data, model);
                 double maxHeight = EditingData.FindMaxHeight(data);
-                //Calculation.DetermineContourLines(data, model, pointsInOneRow, maxHeight);
-                Calculation.DetermineContourLines(edges, model, maxHeight);
-            }
-        }
 
-        private void DetermineIntervalNewMeasuringPoints(ref List<double[]> data, ref int pointsInOneRow)
-        {
-            if (toolStripComboBox1.SelectedIndex == toolStripComboBox1.Items.Count-1)
-            {
-                return;
-            }
-            else if (toolStripComboBox1.SelectedIndex == 0)
-            {
-                CreateMeasuredPoints(ref data, ref pointsInOneRow, 0.1f);
-            }
-            else if(toolStripComboBox1.SelectedIndex == 1)
-            {
-                CreateMeasuredPoints(ref data, ref pointsInOneRow, 0.2f);
-            }
-            else if (toolStripComboBox1.SelectedIndex == 2)
-            {
-                CreateMeasuredPoints(ref data, ref pointsInOneRow, 0.25f);
-            }
-            else if (toolStripComboBox1.SelectedIndex == 3)
-            {
-                CreateMeasuredPoints(ref data, ref pointsInOneRow, 0.5f);
-            }
-        }
-        
-        private void CreateMeasuredPoints(ref List<double[]> data, ref int pointsInOneRow, float interval)
-        {
-            float newSideLength = (float) (data[1][0] - data[0][0]) * interval; 
-            List<double[]> extraPoints = new List<double[]> { };
-            for (int i = 0; i < data.Count - 1; i++)
-            {
-                for (float j = newSideLength; j < data[i + 1][0] - data[i][0]; j += newSideLength)
+                if (pressedMenuItem == PressedMenuItem.DrawContourLines)
                 {
-
-                    double[] newPoint = { data[i][0] + j, data[i][1], data[i][2] + j * (data[i + 1][2] - data[i][2]) };
-
-                    extraPoints.Add(newPoint);
+                    Calculation.DetermineContourLines(data, model, pointsInOneRow, maxHeight);
                 }
             }
-            foreach (double[] item in extraPoints)
-            {
-                data.Add(item);
-            }
-            extraPoints.Clear();
-            EditingData.SortData(data);
-            Calculation.DeterminePointsInOneRow(data, ref pointsInOneRow);
-            for (int i = 0; i < data.Count - pointsInOneRow; i++)
-            {
-                for (float j = newSideLength; j < data[i + pointsInOneRow][1] - data[i][1]; j += newSideLength)
-                {
-                    double[] newPoint = { data[i][0], data[i][1] + j , data[i][2] + j * (data[i + pointsInOneRow][2] - data[i][2]) };
-
-                    extraPoints.Add(newPoint);
-                }
-            }
-            foreach (double[] item in extraPoints)
-            {
-                data.Add(item);
-            }
-            EditingData.SortData(data);
         }
+
+
 
         private void AddControlsForFileTask(List<double[]> data)
         {
@@ -300,8 +244,8 @@ namespace ContourMap
             };
             Label labelMeter = new Label()
             {
-                Location = new Point(162, 155),
-                Text = "m"
+                Location = new Point(175, 155),
+                Text = "m³"
             };
             TextBox textBoxVolume = new TextBox()
             {
@@ -355,7 +299,7 @@ namespace ContourMap
             double maxHeight = EditingData.FindMaxHeight(data);
             Drawing.DrawColumnSeries(ref plot, data, pointsInOneRow, maxHeight, i);
         }
-
+     
         private PlotModel AddPlotViewModelForContourMap()
         {
             PlotView plotContour = new PlotView()
@@ -369,6 +313,7 @@ namespace ContourMap
             splitContainer1.Panel2.Controls.Add(plotContour);
             return model;
         }
+
 
     }
     

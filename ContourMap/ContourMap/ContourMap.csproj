@@ -59,9 +59,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StraightLine.cs" />
-    <Compile Include="Triangle.cs" />
-    <Compile Include="Vector.cs" />
     <EmbeddedResource Include="Hillproject.resx">
       <DependentUpon>Hillproject.cs</DependentUpon>
     </EmbeddedResource>

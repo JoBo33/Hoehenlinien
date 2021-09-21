@@ -109,19 +109,9 @@ namespace ContourMap
             return columnSeries;
         }
 
-        public static void DrawEdges(List<Vector[]> edges, PlotModel model)
-        {
-            for (int i = 0; i < edges.Count; i++)
-            {
-                LineSeries edge = new LineSeries()
-                {
-                    Color = OxyColors.Red,
-                    MarkerType = MarkerType.Circle
-                };
-                edge.Points.Add(new DataPoint(edges[i][0].X, edges[i][0].Y));
-                edge.Points.Add(new DataPoint(edges[i][1].X, edges[i][1].Y));
-                model.Series.Add(edge);
-            }
-        }
+
+        
+
+       
     }
 }
